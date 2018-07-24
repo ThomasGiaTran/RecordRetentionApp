@@ -1,0 +1,166 @@
+﻿@model RecordRetentionApp.Models.HomeViewModel
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>TestPartial</title>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+</head>
+<body>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+
+
+    <form id="formConent">
+        <div class="modal-body " id="editModalDiv">
+
+
+            <div class="row">
+                <div class="col-sm-12">
+
+                    @*@if (ViewBag.Test != null)
+                        {
+                            <h3>@ViewBag.Test</h3>
+                        }*@
+
+
+                    @*@Html.ValidationSummary(false)*@
+
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger alert-dismissable" role="alert">
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            @Html.ValidationSummary(false)
+                        </div>
+                    }
+                </div>
+            </div>
+
+            @Html.HiddenFor(m => m.ri.RecordID, new { id = "recordid" })
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h3 class="panel-title">Edit Record</h3>
+                        </div>
+                        <div class="col-md-3" style="text-align:right">
+                            @Html.LabelFor(m => m.ri.Laserfiche)
+                        </div>
+                        <div class="col-md-1" style="text-align:left">
+                            @Html.CheckBoxFor(m => m.ri.Laserfiche, new { @style = "height: 20px; width: 20px;" })
+                        </div>
+
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            @*@if (!ViewData.ModelState.IsValid)
+                                {
+                                    <div class="alert alert-danger alert-dismissable" role="alert">
+                                        <button type="button" class="close" data-dismiss="alert">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        @Html.ValidationSummary(false)
+                                    </div>
+                                }*@
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            @*@Html.LabelFor(m => m.ri.department)
+                                @Html.TextBoxFor(m => m.ri.department, new { @class = "form-control", id = "department" })*@
+
+                            @Html.LabelFor(m => m.ri.Office_Of_Record)
+                            @Html.DropDownListFor(m => m.ri.Office_Of_Record,
+                                                    new SelectList(Model.Office_Of_Records, "Office_Of_Record_Name", "Office_Of_Record_Name"),
+                                                     new { @class = "form-control" })
+
+                        </div>
+
+                        <div class="col-md-3">
+                            @Html.LabelFor(m => m.ri.File_Number)
+                            @Html.TextBoxFor(m => m.ri.File_Number, new { @class = "form-control" })
+                        </div>
+
+                        <div class="col-md-3">
+                            @Html.LabelFor(m => m.ri.retention_period_Month)
+                            @Html.TextBoxFor(m => m.ri.retention_period_Month, new { @class = "form-control" })
+                        </div>
+
+                        <div class="col-md-3">
+                            @Html.LabelFor(m => m.ri.Folder_Name)
+                            @Html.TextBoxFor(m => m.ri.Folder_Name, new { @class = "form-control" })
+                            @*@Html.DropDownListFor(m => m.ri.Folder_Name,
+                                new SelectList(Model.folderNameDropdown, "Folder_Name", "Folder_Name"),
+                                 new { @class = "form-control", id = "foldername" })*@
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            @Html.LabelFor(m => m.ri.Retention_Description)
+                            @Html.TextBoxFor(m => m.ri.Retention_Description, new { @class = "form-control" })
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            @Html.LabelFor(m => m.ri.Record_Description)
+                            @Html.TextAreaFor(m => m.ri.Record_Description, new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-md-12">
+                        <button class="btn" data-dismiss="modal">Cancel</button>
+                        <input class="btn btn-primary" value="Save" type="submit" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+</body>
+</html>
+<script>
+    $('#formConent').submit(function () {
+        var link = '@Url.Action("Index", "Home")';
+        //var isvalid = $('#formConent').valid();  // Tells whether the form is valid
+        //alert("Viewbag Value: " + bagSuccess);
+        $.ajax({
+            url: '@Url.Action("EditRecord", "Home")',
+            type: "Post",
+            data: $("#formConent").serialize()
+        }).done(function (result) {
+            if (result.success) {
+                $("#editModalDiv").modal("hide");
+                window.location.href = link;
+            }
+            else {
+                $("#editModalDiv").html(result);
+            }
+        });
+        return false;
+    });
+</script>
